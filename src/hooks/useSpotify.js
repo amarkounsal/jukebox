@@ -212,7 +212,11 @@ export function useSpotify(onShowToast) {
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
       body,
     });
-    if (!res.ok) throw new Error("Token exchange failed");
+    if (!res.ok) {
+      const errText = await res.text();
+      console.error("Token exchange error response:", errText);
+      throw new Error(`Token exchange failed: ${errText}`);
+    }
     const data = await res.json();
     saveTokens(data);
     setIsAuthenticated(true);
